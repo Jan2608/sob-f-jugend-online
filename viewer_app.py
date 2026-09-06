@@ -15,10 +15,37 @@ ASSETS_DIR = BASE_DIR / "assets"
 LOGO_PATH = ASSETS_DIR / "sob_logo.png"
 TRAINING_UPLOAD_DIR = DATA_DIR / "training_uploads"
 
-SAISON_START = date(2025, 9, 1)
-SAISON_END = date(2026, 7, 31)
+SAISON_START = date(2026, 9, 16)
+SAISON_END = date(2027, 7, 31)
+SAISON_LABEL = "2026/2027"
 
-PLAYER_COLUMNS = ["id", "name", "jahrgang", "status", "geburtstag", "fuss", "position", "weitere_position", "staerken", "notiz"]
+# Offizielle Schulferien Baden-Württemberg für das Schuljahr 2026/2027.
+# Bewegliche Ferientage sind lokal je Schule und deshalb hier nicht automatisch enthalten.
+SCHOOL_HOLIDAYS_BW = [
+    ("Sommerferien 2026", date(2026, 7, 30), date(2026, 9, 12)),
+    ("Herbstferien 2026", date(2026, 10, 26), date(2026, 10, 30)),
+    ("Weihnachtsferien 2026/2027", date(2026, 12, 23), date(2027, 1, 9)),
+    ("Osterferien 2027", date(2027, 3, 30), date(2027, 4, 3)),
+    ("Pfingstferien 2027", date(2027, 5, 18), date(2027, 5, 29)),
+    ("Sommerferien 2027", date(2027, 7, 29), date(2027, 9, 11)),
+]
+SCHOOL_FREE_DAYS_BW = {
+    date(2026, 10, 31): "Reformationsfest schulfrei",
+    date(2027, 3, 25): "Gründonnerstag schulfrei",
+}
+
+
+def school_holiday_name(day):
+    for name, start, end in SCHOOL_HOLIDAYS_BW:
+        if start <= day <= end:
+            return name
+    return SCHOOL_FREE_DAYS_BW.get(day, "")
+
+
+def is_school_holiday(day):
+    return bool(school_holiday_name(day))
+
+PLAYER_COLUMNS = ["id", "name", "jahrgang", "status", "geburtstag", "fuss", "position", "weitere_position", "staerken", "notiz", "eltern1_name", "eltern1_telefon", "eltern1_email", "eltern2_name", "eltern2_telefon", "eltern2_email", "notfallnummer", "private_info"]
 EVENT_COLUMNS = ["id", "datum", "uhrzeit", "typ", "titel", "ort", "hinweis"]
 TRAINING_COLUMNS = ["id", "titel", "datum", "kategorie", "schwerpunkt", "link", "datei", "notiz", "vormerken"]
 
@@ -32,6 +59,37 @@ st.set_page_config(
 
 def esc(value):
     return html.escape(str(value)) if value is not None else ""
+
+
+def qp_get_value(key, default=""):
+    try:
+        val = st.query_params.get(key, default)
+        if isinstance(val, list):
+            return val[0] if val else default
+        return val
+    except Exception:
+        return default
+
+
+def player_info_html(row):
+    def val(col):
+        value = str(row.get(col, "")).strip()
+        return esc(value) if value else "—"
+    return f"""
+    <div class="info-card">
+      <div class="info-title">Spielerinfo · {val('name')}</div>
+      <div class="info-grid">
+        <div><span>Elternteil 1</span><b>{val('eltern1_name')}</b></div>
+        <div><span>Telefon Elternteil 1</span><b>{val('eltern1_telefon')}</b></div>
+        <div><span>E-Mail Elternteil 1</span><b>{val('eltern1_email')}</b></div>
+        <div><span>Elternteil 2</span><b>{val('eltern2_name')}</b></div>
+        <div><span>Telefon Elternteil 2</span><b>{val('eltern2_telefon')}</b></div>
+        <div><span>E-Mail Elternteil 2</span><b>{val('eltern2_email')}</b></div>
+        <div><span>Notfallnummer</span><b>{val('notfallnummer')}</b></div>
+        <div><span>Private Hinweise</span><b>{val('private_info')}</b></div>
+      </div>
+    </div>
+    """
 
 
 def logo_b64():
@@ -79,14 +137,40 @@ def german_date(value):
     return dt.strftime("%d.%m.%Y")
 
 
+def relevant_training_dates_for_stats(dates, attendance=None):
+    """Nur Trainingstage zählen, die für die Quote wirklich relevant sind.
+
+    Normalfall: bis einschließlich heute.
+    Falls das Saisonjahr in der Zukunft/Vergangenheit zum Testen nicht passt, werden alternativ
+    die Trainingstage genommen, zu denen bereits Anwesenheiten gepflegt wurden. So ergeben 3/3
+    besuchte Trainings 100 % und nicht 3 von allen Saisontrainings.
+    """
+    today = date.today()
+    dates = list(dates)
+    past_dates = [d for d in dates if d <= today]
+    attendance = attendance or {}
+    touched_dates = []
+    for d in dates:
+        day_data = attendance.get(str(d), {})
+        if isinstance(day_data, dict) and any(bool(v) for v in day_data.values()):
+            touched_dates.append(d)
+
+    if past_dates and today <= SAISON_END:
+        return past_dates
+    if touched_dates:
+        return touched_dates
+    return past_dates
+
+
 def attendance_count(name, attendance, dates):
     return sum(1 for d in dates if attendance.get(str(d), {}).get(name, False))
 
 
 def attendance_percent(name, attendance, dates):
-    if not dates:
+    relevant_dates = relevant_training_dates_for_stats(dates, attendance)
+    if not relevant_dates:
         return "0 %"
-    return f"{round(attendance_count(name, attendance, dates) / len(dates) * 100)} %"
+    return f"{round(attendance_count(name, attendance, relevant_dates) / len(relevant_dates) * 100)} %"
 
 
 def trainer_icon(status):
@@ -94,7 +178,7 @@ def trainer_icon(status):
 
 
 def build_player_table_html(df):
-    headers = ["Name", "Jahrgang", "Training", "Anw.", "Position", "Kann auch", "Fuß", "Stärken", "Geburtstag", "Notiz"]
+    headers = ["Name", "Jahrgang", "Training", "Anw.", "Position", "Kann auch", "Fuß", "Stärken", "Geburtstag", "Notiz", "Info"]
     out = '<table class="compact-table"><thead><tr>'
     for h in headers:
         out += f"<th>{esc(h)}</th>"
@@ -111,6 +195,7 @@ def build_player_table_html(df):
         out += f"<td>{esc(r.get('staerken',''))}</td>"
         out += f"<td>{esc(r.get('geburtstag',''))}</td>"
         out += f"<td>{esc(r.get('notiz',''))}</td>"
+        out += f"<td><a class='action-link' href='?info_player={esc(r.get('id',''))}' target='_self'>i</a></td>"
         out += "</tr>"
     out += "</tbody></table>"
     return out
@@ -228,6 +313,39 @@ st.markdown("""
     .metric-grid{grid-template-columns:1fr;}
     .section-title{font-size:20px;}
 }
+
+.info-card {
+    background:var(--panel, rgba(255,255,255,.98));
+    border:1px solid rgba(0,51,204,.16);
+    border-radius:18px;
+    padding:16px;
+    margin:10px 0 18px 0;
+    box-shadow:0 12px 28px rgba(11,23,54,.07);
+}
+.info-title {font-size:20px;font-weight:950;color:var(--text, #0B1736);margin-bottom:12px;}
+.info-grid {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;}
+.info-grid div {background:rgba(0,51,204,.055);border:1px solid rgba(0,51,204,.10);border-radius:12px;padding:10px;}
+.info-grid span {display:block;font-size:11px;color:var(--muted, #60708D);text-transform:uppercase;font-weight:900;letter-spacing:.06em;margin-bottom:4px;}
+.info-grid b {font-size:14px;color:var(--text, #0B1736);font-weight:800;word-break:break-word;}
+.action-link {font-weight:950;text-decoration:none;color:#0033CC;margin-left:8px;}
+@media (max-width:700px){.info-grid{grid-template-columns:1fr;}}
+
+
+.calendar-panel-full {background:rgba(255,255,255,.96);border:1px solid rgba(0,51,204,.14);border-radius:20px;padding:16px;margin-bottom:16px;}
+.calendar-month-card {margin-bottom:14px;}
+.calendar-grid {display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px;}
+.cal-head {text-align:center;color:#60708D;font-size:11px;font-weight:900;padding:3px 0;}
+.empty-day {min-height:34px;}
+.cal-day {display:block;text-align:center;text-decoration:none;background:rgba(0,51,204,.055);border:1px solid rgba(0,51,204,.14);border-radius:9px;padding:7px 2px;min-height:34px;color:#0B1736;font-size:12px;font-weight:800;line-height:1.15;}
+.cal-day-disabled {cursor:default;}
+.holiday-day {background:#FFE66D!important;border-color:#D6AA00!important;color:#2B2400!important;box-shadow:inset 0 0 0 1px rgba(214,170,0,.35);}
+.holiday-badge {display:inline-block;width:12px;height:12px;border-radius:4px;background:#FFE66D;border:1px solid #D6AA00;margin-right:6px;vertical-align:-2px;}
+.cal-note {color:#60708D;font-size:12px;margin-top:10px;}
+.calendar-help {color:#60708D;font-size:13px;margin-bottom:10px;}
+.week-head {color:#60708D;font-size:11px;font-weight:800;text-align:center;}
+.month-name {font-weight:950;color:#0B1736;font-size:15px;margin:5px 0 7px 0;}
+@media (max-width:900px){.calendar-panel-full>div[style*="grid-template-columns"]{grid-template-columns:1fr!important}.calendar-grid{gap:3px}.cal-day{font-size:11px;padding:6px 1px;min-height:31px}}
+
 </style>
 """, unsafe_allow_html=True)
 
@@ -256,7 +374,7 @@ st.markdown(f"""
     <div class="sob-title">SOB F-Jugend</div>
     <div class="sob-subtitle">Online-Übersicht für Spieler, Termine, Kalender und Trainingsplanung.</div>
   </div>
-  <div class="season-card"><div class="season-label">Saison</div><div class="season-value">2025/2026</div></div>
+  <div class="season-card"><div class="season-label">Saison</div><div class="season-value">{SAISON_LABEL}</div></div>
 </div>
 """, unsafe_allow_html=True)
 
@@ -287,6 +405,13 @@ if active.empty:
 else:
     st.markdown(build_player_table_html(active), unsafe_allow_html=True)
 
+
+info_player_id = qp_get_value("info_player", "")
+if info_player_id and not players.empty:
+    info_rows = players[players["id"].astype(str).eq(str(info_player_id))]
+    if not info_rows.empty:
+        st.markdown(player_info_html(info_rows.iloc[0]), unsafe_allow_html=True)
+
 st.markdown('<div class="section-title">Spiele & Termine</div>', unsafe_allow_html=True)
 if events.empty:
     st.markdown('<div class="empty-box">Noch keine Spiele oder Termine eingetragen.</div>', unsafe_allow_html=True)
@@ -294,32 +419,41 @@ else:
     st.markdown(build_event_table_html(events), unsafe_allow_html=True)
 
 st.markdown('<div class="section-title">Trainer- & Saisonkalender</div>', unsafe_allow_html=True)
-st.markdown('<div class="calendar-panel">', unsafe_allow_html=True)
-st.markdown('<div class="legend"><span><span class="dot blue"></span>Marco</span><span><span class="dot red"></span>Jan</span><span>🔵🔴 Marco & Jan</span><span><span class="dot empty"></span>kein Trainer</span></div>', unsafe_allow_html=True)
 month_names = ["", "Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"]
 months = []
-current = date(2025, 9, 1)
+current = date(SAISON_START.year, SAISON_START.month, 1)
 while current <= SAISON_END:
     months.append((current.year, current.month))
     current = date(current.year + 1, 1, 1) if current.month == 12 else date(current.year, current.month + 1, 1)
 training_set = set(training_dates)
 game_dates = set(pd.to_datetime(events["datum"], errors="coerce").dt.date.dropna().tolist()) if not events.empty else set()
-for row_start in range(0, len(months), 3):
-    cols = st.columns(3)
-    for col, (year, month) in zip(cols, months[row_start:row_start+3]):
-        with col:
-            st.markdown(f"**{month_names[month]} {year}**")
-            for week in calendar.monthcalendar(year, month):
-                labels = []
-                for day in week:
-                    if day == 0:
-                        labels.append(" ")
-                    else:
-                        d = date(year, month, day)
-                        prefix = "T" if d in training_set else "S" if d in game_dates else ""
-                        labels.append(f"{day}{prefix}{trainer_icon(trainer_calendar.get(str(d),'none'))}")
-                st.caption(" · ".join(labels))
-st.markdown('</div>', unsafe_allow_html=True)
+cal_html = '<div class="calendar-panel-full">'
+cal_html += '<div class="legend"><span><span class="dot blue"></span>Marco</span><span><span class="dot red"></span>Jan</span><span>🔵🔴 Marco & Jan</span><span><span class="dot empty"></span>kein Trainer</span><span><span class="holiday-badge"></span>Schulferien BW / schulfrei</span></div>'
+cal_html += '<div class="calendar-help">T = Training, S = Spiel/Termin. Gelb = Schulferien Baden-Württemberg oder offizieller schulfrei-Tag.</div>'
+cal_html += '<div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;">'
+for year, month in months:
+    cal_html += '<div class="calendar-month-card">'
+    cal_html += f'<div class="month-name">{month_names[month]} {year}</div>'
+    cal_html += '<div class="calendar-grid">'
+    for lab in ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"]:
+        cal_html += f'<div class="cal-head">{lab}</div>'
+    for week in calendar.monthcalendar(year, month):
+        for day in week:
+            if day == 0:
+                cal_html += '<div class="empty-day"></div>'
+                continue
+            d = date(year, month, day)
+            prefix = "T" if d in training_set else "S" if d in game_dates else ""
+            holiday = school_holiday_name(d)
+            cls = "cal-day holiday-day" if holiday else "cal-day"
+            title = f"{german_date(d)} · {trainer_label(trainer_calendar.get(str(d), 'none'))}" + (f" · {holiday}" if holiday else "")
+            label = f"{day}{prefix}<br>{trainer_icon(trainer_calendar.get(str(d),'none'))}"
+            cal_html += f'<span class="{cls} cal-day-disabled" title="{esc(title)}">{label}</span>'
+    cal_html += '</div></div>'
+cal_html += '</div>'
+cal_html += '<div class="cal-note">Hinweis: Bewegliche Ferientage sind je Schule unterschiedlich und nicht automatisch enthalten.</div>'
+cal_html += '</div>'
+st.markdown(cal_html, unsafe_allow_html=True)
 
 st.markdown('<div class="section-title">Geplante Trainingsübungen</div>', unsafe_allow_html=True)
 if training.empty:
