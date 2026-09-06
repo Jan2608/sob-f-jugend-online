@@ -177,6 +177,10 @@ def trainer_icon(status):
     return {"none": "□", "marco": "🔵", "jan": "🔴", "both": "🔵🔴"}.get(status, "□")
 
 
+def trainer_label(status):
+    return {"none": "kein Trainer", "marco": "Marco", "jan": "Jan", "both": "Marco & Jan"}.get(status, "kein Trainer")
+
+
 def build_player_table_html(df):
     headers = ["Name", "Jahrgang", "Training", "Anw.", "Position", "Kann auch", "Fuß", "Stärken", "Geburtstag", "Notiz", "Info"]
     out = '<table class="compact-table"><thead><tr>'
