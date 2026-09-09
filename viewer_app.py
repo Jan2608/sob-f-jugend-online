@@ -45,9 +45,9 @@ def school_holiday_name(day):
 def is_school_holiday(day):
     return bool(school_holiday_name(day))
 
-PLAYER_COLUMNS = ["id", "name", "jahrgang", "status", "geburtstag", "fuss", "position", "weitere_position", "staerken", "notiz", "eltern1_name", "eltern1_telefon", "eltern1_email", "eltern2_name", "eltern2_telefon", "eltern2_email", "notfallnummer", "private_info"]
+PLAYER_COLUMNS = ["id", "name", "jahrgang", "status", "geburtstag", "fuss", "position", "weitere_position", "staerken", "notiz", "eltern1_name", "eltern1_telefon", "eltern1_email", "eltern2_name", "eltern2_telefon", "eltern2_email", "notfallnummer", "private_info", "mitgliedsantrag", "spielgenehmigungsantrag", "kontaktdaten", "aufsichtspflicht"]
 EVENT_COLUMNS = ["id", "datum", "uhrzeit", "typ", "titel", "ort", "hinweis"]
-TRAINING_COLUMNS = ["id", "titel", "datum", "kategorie", "schwerpunkt", "link", "datei", "notiz", "vormerken"]
+TRAINING_COLUMNS = ["id", "titel", "datum", "kategorie", "schwerpunkt", "link", "datei", "dateiname", "notiz", "vormerken"]
 
 st.set_page_config(
     page_title="SOB F-Jugend · Online-Ansicht",
@@ -59,6 +59,41 @@ st.set_page_config(
 
 def esc(value):
     return html.escape(str(value)) if value is not None else ""
+
+
+def is_checked(value):
+    value = str(value).strip().lower()
+    return value in ["1", "true", "wahr", "ja", "yes", "y", "x", "✓", "ok"]
+
+
+def checkbox_value(value):
+    return "ja" if value else ""
+
+
+def check_icon(value):
+    return "✅" if is_checked(value) else "⬜"
+
+
+def antraege_count(row):
+    fields = ["mitgliedsantrag", "spielgenehmigungsantrag", "kontaktdaten", "aufsichtspflicht"]
+    return sum(1 for field in fields if is_checked(row.get(field, "")))
+
+
+def antraege_status(row):
+    count = antraege_count(row)
+    return f"{count}/4" if count < 4 else "✅ 4/4"
+
+
+def antraege_detail_html(row):
+    return f"""
+      <div class=\"info-section-title\">Anträge / Unterlagen</div>
+      <div class=\"check-grid\">
+        <div><span>{check_icon(row.get('mitgliedsantrag',''))}</span><b>Mitgliedsantrag</b></div>
+        <div><span>{check_icon(row.get('spielgenehmigungsantrag',''))}</span><b>Spielgenehmigungsantrag</b></div>
+        <div><span>{check_icon(row.get('kontaktdaten',''))}</span><b>Kontaktdaten</b></div>
+        <div><span>{check_icon(row.get('aufsichtspflicht',''))}</span><b>Aufsichtspflicht</b></div>
+      </div>
+    """
 
 
 def qp_get_value(key, default=""):
@@ -78,6 +113,7 @@ def player_info_html(row):
     return f"""
     <div class="info-card">
       <div class="info-title">Spielerinfo · {val('name')}</div>
+      {antraege_detail_html(row)}
       <div class="info-grid">
         <div><span>Elternteil 1</span><b>{val('eltern1_name')}</b></div>
         <div><span>Telefon Elternteil 1</span><b>{val('eltern1_telefon')}</b></div>
@@ -181,8 +217,72 @@ def trainer_label(status):
     return {"none": "kein Trainer", "marco": "Marco", "jan": "Jan", "both": "Marco & Jan"}.get(status, "kein Trainer")
 
 
+def file_mime(path):
+    suffix = path.suffix.lower()
+    if suffix == ".pdf":
+        return "application/pdf"
+    if suffix in [".png"]:
+        return "image/png"
+    if suffix in [".jpg", ".jpeg"]:
+        return "image/jpeg"
+    if suffix == ".webp":
+        return "image/webp"
+    return "application/octet-stream"
+
+
+def render_training_file(abs_file, display_name="", key_prefix="file"):
+    """Zeigt hochgeladene Trainingsdateien sinnvoll an.
+
+    Bilder werden direkt angezeigt.
+    PDFs bekommen eine Vorschau und einen Öffnen/Download-Button.
+    Andere Dateien bekommen einen Download-Button.
+    """
+    if not abs_file or not abs_file.exists():
+        st.write("⚽")
+        return
+
+    suffix = abs_file.suffix.lower()
+    display_name = str(display_name or abs_file.name).strip() or abs_file.name
+
+    if suffix in [".png", ".jpg", ".jpeg", ".webp"]:
+        st.image(str(abs_file), use_container_width=True)
+        st.caption(display_name)
+        return
+
+    data = abs_file.read_bytes()
+
+    if suffix == ".pdf":
+        st.markdown(f"📄 **{esc(display_name)}**")
+        st.download_button(
+            "PDF öffnen / herunterladen",
+            data=data,
+            file_name=display_name if display_name.lower().endswith(".pdf") else abs_file.name,
+            mime="application/pdf",
+            key=f"download_pdf_{key_prefix}",
+            use_container_width=True,
+        )
+        with st.expander("PDF-Vorschau anzeigen"):
+            pdf_b64 = base64.b64encode(data).decode("utf-8")
+            st.markdown(
+                f'<iframe src="data:application/pdf;base64,{pdf_b64}" '
+                f'width="100%" height="520" style="border:1px solid rgba(0,51,204,.18);border-radius:12px;"></iframe>',
+                unsafe_allow_html=True,
+            )
+        return
+
+    st.markdown(f"📎 **{esc(display_name)}**")
+    st.download_button(
+        "Datei öffnen / herunterladen",
+        data=data,
+        file_name=display_name,
+        mime=file_mime(abs_file),
+        key=f"download_file_{key_prefix}",
+        use_container_width=True,
+    )
+
+
 def build_player_table_html(df):
-    headers = ["Name", "Jahrgang", "Training", "Anw.", "Position", "Kann auch", "Fuß", "Stärken", "Geburtstag", "Notiz", "Info"]
+    headers = ["Name", "Jahrgang", "Training", "Anw.", "Position", "Kann auch", "Fuß", "Stärken", "Geburtstag", "Notiz", "Anträge", "Info"]
     out = '<table class="compact-table"><thead><tr>'
     for h in headers:
         out += f"<th>{esc(h)}</th>"
@@ -199,6 +299,7 @@ def build_player_table_html(df):
         out += f"<td>{esc(r.get('staerken',''))}</td>"
         out += f"<td>{esc(r.get('geburtstag',''))}</td>"
         out += f"<td>{esc(r.get('notiz',''))}</td>"
+        out += f"<td><b>{esc(antraege_status(r))}</b></td>"
         out += f"<td><a class='action-link' href='?info_player={esc(r.get('id',''))}' target='_self'>i</a></td>"
         out += "</tr>"
     out += "</tbody></table>"
@@ -350,6 +451,15 @@ st.markdown("""
 .month-name {font-weight:950;color:#0B1736;font-size:15px;margin:5px 0 7px 0;}
 @media (max-width:900px){.calendar-panel-full>div[style*="grid-template-columns"]{grid-template-columns:1fr!important}.calendar-grid{gap:3px}.cal-day{font-size:11px;padding:6px 1px;min-height:31px}}
 
+
+.info-section-title {font-size:15px;font-weight:950;color:var(--text, #0B1736);margin:14px 0 8px 0;}
+.check-grid {display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-bottom:8px;}
+.check-grid div {background:rgba(0,51,204,.055);border:1px solid rgba(0,51,204,.10);border-radius:12px;padding:10px;display:flex;gap:8px;align-items:center;}
+.check-grid span {font-size:18px;line-height:1;}
+.check-grid b {font-size:13px;color:var(--text, #0B1736);font-weight:850;word-break:break-word;}
+@media (max-width:900px){.check-grid{grid-template-columns:repeat(2,minmax(0,1fr));}}
+@media (max-width:520px){.check-grid{grid-template-columns:1fr;}}
+
 </style>
 """, unsafe_allow_html=True)
 
@@ -369,6 +479,7 @@ active = players[players["status"].str.lower().eq("aktiv")].copy() if not player
 if not active.empty:
     active["Training dabei"] = active["name"].apply(lambda n: attendance_count(n, attendance, training_dates))
     active["Anwesenheit"] = active["name"].apply(lambda n: attendance_percent(n, attendance, training_dates))
+    active["Anträge"] = active.apply(antraege_status, axis=1)
 
 st.markdown(f"""
 <div class="sob-hero">
@@ -486,10 +597,7 @@ else:
                 file_ref = str(r.get("datei", ""))
                 abs_file = DATA_DIR / file_ref if file_ref else None
                 with c1:
-                    if abs_file and abs_file.exists() and abs_file.suffix.lower() in [".png", ".jpg", ".jpeg", ".webp"]:
-                        st.image(str(abs_file), use_container_width=True)
-                    else:
-                        st.write("⚽")
+                    render_training_file(abs_file, r.get("dateiname", "") or (abs_file.name if abs_file else ""), key_prefix=f"{r.get('id','')}_planned")
                 with c2:
                     badge = " ⭐ vorgemerkt" if str(r.get("vormerken", "")).lower() == "ja" else ""
                     st.markdown(f"### {esc(r.get('titel',''))}{badge}")
@@ -513,10 +621,7 @@ else:
                 file_ref = str(r.get("datei", ""))
                 abs_file = DATA_DIR / file_ref if file_ref else None
                 with c1:
-                    if abs_file and abs_file.exists() and abs_file.suffix.lower() in [".png", ".jpg", ".jpeg", ".webp"]:
-                        st.image(str(abs_file), use_container_width=True)
-                    else:
-                        st.write("⚽")
+                    render_training_file(abs_file, r.get("dateiname", "") or (abs_file.name if abs_file else ""), key_prefix=f"{r.get('id','')}_collection")
                 with c2:
                     st.markdown(f"### {esc(r.get('titel',''))}")
                     st.markdown(f'<div class="training-meta">{esc(r.get("kategorie",""))} · {esc(r.get("schwerpunkt",""))}</div>', unsafe_allow_html=True)
