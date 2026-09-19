@@ -173,6 +173,25 @@ def german_date(value):
     return dt.strftime("%d.%m.%Y")
 
 
+
+def upcoming_dashboard_items(training_dates, events, limit=3):
+    """Nächste Termine dynamisch ab heutigem Datum berechnen.
+
+    Vergangene Trainings/Termine werden in den oberen Kacheln nicht mehr angezeigt.
+    Beim Öffnen oder Neuladen des Dashboards wird date.today() neu geprüft.
+    """
+    today = date.today()
+    items = [{"datum": d, "typ": "Training"} for d in training_dates if d >= today]
+
+    if events is not None and not events.empty:
+        for _, r in events.iterrows():
+            dt = pd.to_datetime(r.get("datum", ""), errors="coerce")
+            if not pd.isna(dt) and dt.date() >= today:
+                items.append({"datum": dt.date(), "typ": r.get("typ", "Termin") or "Termin"})
+
+    return sorted(items, key=lambda x: x["datum"])[:limit]
+
+
 def relevant_training_dates_for_stats(dates, attendance=None):
     """Nur Trainingstage zählen, die für die Quote wirklich relevant sind.
 
@@ -493,12 +512,7 @@ st.markdown(f"""
 </div>
 """, unsafe_allow_html=True)
 
-items = [{"datum": d, "typ": "Training"} for d in training_dates]
-for _, r in events.iterrows():
-    dt = pd.to_datetime(r.get("datum", ""), errors="coerce")
-    if not pd.isna(dt):
-        items.append({"datum": dt.date(), "typ": r.get("typ", "Termin")})
-items = sorted(items, key=lambda x: x["datum"])[:3]
+items = upcoming_dashboard_items(training_dates, events, limit=3)
 next_hint = " · ".join([f"{german_date(i['datum'])} {i['typ']}" for i in items])
 next_value = german_date(items[0]["datum"]) if items else "—"
 
