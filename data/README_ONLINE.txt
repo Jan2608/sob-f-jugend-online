@@ -1,0 +1,1 @@
+SOB F-Jugend Online-Ansicht\n\nDiese Version ist nur zum Anschauen gedacht.\n\nLokaler Test:\npython -m streamlit run viewer_app.py\n\nFür Streamlit Cloud muss dieser Ordner in ein GitHub-Repository hochgeladen werden.\n
