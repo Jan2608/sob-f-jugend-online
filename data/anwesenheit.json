@@ -17,27 +17,31 @@
     "Filian Oßwald": true,
     "Nathan Glowacki": true,
     "Leo Kunemann": true,
-    "Jona": true
+    "Jona": true,
+    "Lean Mühlethaler": false,
+    "Lenni Wanner": false
   },
   "2026-09-23": {
-    "Levin Linder": false,
-    "Jonathan Bauer": false,
-    "Aylan Adrovic": false,
-    "Noam Wittel": false,
-    "Georg Steidle": false,
-    "Simon Dvorak": false,
-    "Tom Seyboth": false,
-    "Miran Demirdüken": false,
+    "Levin Linder": true,
+    "Jonathan Bauer": true,
+    "Aylan Adrovic": true,
+    "Noam Wittel": true,
+    "Georg Steidle": true,
+    "Simon Dvorak": true,
+    "Tom Seyboth": true,
+    "Miran Demirdüken": true,
     "Joel Loewen": false,
     "Leon Ruf": false,
-    "Tom Saissi": false,
-    "Milo Rebina": false,
-    "Axel Weiss": false,
-    "Matti Natterer": false,
-    "Filian Oßwald": false,
-    "Nathan Glowacki": false,
-    "Leo Kunemann": false,
-    "Jona": false
+    "Tom Saissi": true,
+    "Milo Rebina": true,
+    "Axel Weiss": true,
+    "Matti Natterer": true,
+    "Filian Oßwald": true,
+    "Nathan Glowacki": true,
+    "Leo Kunemann": true,
+    "Jona": true,
+    "Lean Mühlethaler": true,
+    "Lenni Wanner": true
   },
   "2026-09-30": {
     "Levin Linder": false,
@@ -57,7 +61,9 @@
     "Filian Oßwald": false,
     "Nathan Glowacki": false,
     "Leo Kunemann": false,
-    "Jona": false
+    "Jona": false,
+    "Lean Mühlethaler": false,
+    "Lenni Wanner": false
   },
   "2026-10-07": {
     "Levin Linder": false,
@@ -77,7 +83,9 @@
     "Filian Oßwald": false,
     "Nathan Glowacki": false,
     "Leo Kunemann": false,
-    "Jona": false
+    "Jona": false,
+    "Lean Mühlethaler": false,
+    "Lenni Wanner": false
   },
   "2026-10-14": {
     "Levin Linder": false,
@@ -97,7 +105,9 @@
     "Filian Oßwald": false,
     "Nathan Glowacki": false,
     "Leo Kunemann": false,
-    "Jona": false
+    "Jona": false,
+    "Lean Mühlethaler": false,
+    "Lenni Wanner": false
   },
   "2026-10-21": {
     "Levin Linder": false,
@@ -117,7 +127,9 @@
     "Filian Oßwald": false,
     "Nathan Glowacki": false,
     "Leo Kunemann": false,
-    "Jona": false
+    "Jona": false,
+    "Lean Mühlethaler": false,
+    "Lenni Wanner": false
   },
   "2026-10-28": {
     "Levin Linder": false,
@@ -137,7 +149,9 @@
     "Filian Oßwald": false,
     "Nathan Glowacki": false,
     "Leo Kunemann": false,
-    "Jona": false
+    "Jona": false,
+    "Lean Mühlethaler": false,
+    "Lenni Wanner": false
   },
   "2026-11-04": {
     "Levin Linder": false,
@@ -157,7 +171,9 @@
     "Filian Oßwald": false,
     "Nathan Glowacki": false,
     "Leo Kunemann": false,
-    "Jona": false
+    "Jona": false,
+    "Lean Mühlethaler": false,
+    "Lenni Wanner": false
   },
   "2026-11-11": {
     "Levin Linder": false,
@@ -177,7 +193,9 @@
     "Filian Oßwald": false,
     "Nathan Glowacki": false,
     "Leo Kunemann": false,
-    "Jona": false
+    "Jona": false,
+    "Lean Mühlethaler": false,
+    "Lenni Wanner": false
   },
   "2026-11-18": {
     "Levin Linder": false,
@@ -197,7 +215,9 @@
     "Filian Oßwald": false,
     "Nathan Glowacki": false,
     "Leo Kunemann": false,
-    "Jona": false
+    "Jona": false,
+    "Lean Mühlethaler": false,
+    "Lenni Wanner": false
   },
   "2026-11-25": {
     "Levin Linder": false,
@@ -217,7 +237,9 @@
     "Filian Oßwald": false,
     "Nathan Glowacki": false,
     "Leo Kunemann": false,
-    "Jona": false
+    "Jona": false,
+    "Lean Mühlethaler": false,
+    "Lenni Wanner": false
   },
   "2026-12-02": {
     "Levin Linder": false,
@@ -237,7 +259,9 @@
     "Filian Oßwald": false,
     "Nathan Glowacki": false,
     "Leo Kunemann": false,
-    "Jona": false
+    "Jona": false,
+    "Lean Mühlethaler": false,
+    "Lenni Wanner": false
   },
   "2026-12-09": {
     "Levin Linder": false,
@@ -257,7 +281,9 @@
     "Filian Oßwald": false,
     "Nathan Glowacki": false,
     "Leo Kunemann": false,
-    "Jona": false
+    "Jona": false,
+    "Lean Mühlethaler": false,
+    "Lenni Wanner": false
   },
   "2026-12-16": {
     "Levin Linder": false,
@@ -277,7 +303,9 @@
     "Filian Oßwald": false,
     "Nathan Glowacki": false,
     "Leo Kunemann": false,
-    "Jona": false
+    "Jona": false,
+    "Lean Mühlethaler": false,
+    "Lenni Wanner": false
   },
   "2026-12-23": {
     "Levin Linder": false,
@@ -297,7 +325,9 @@
     "Filian Oßwald": false,
     "Nathan Glowacki": false,
     "Leo Kunemann": false,
-    "Jona": false
+    "Jona": false,
+    "Lean Mühlethaler": false,
+    "Lenni Wanner": false
   },
   "2026-12-30": {
     "Levin Linder": false,
@@ -317,7 +347,9 @@
     "Filian Oßwald": false,
     "Nathan Glowacki": false,
     "Leo Kunemann": false,
-    "Jona": false
+    "Jona": false,
+    "Lean Mühlethaler": false,
+    "Lenni Wanner": false
   },
   "2027-01-06": {
     "Levin Linder": false,
@@ -337,7 +369,9 @@
     "Filian Oßwald": false,
     "Nathan Glowacki": false,
     "Leo Kunemann": false,
-    "Jona": false
+    "Jona": false,
+    "Lean Mühlethaler": false,
+    "Lenni Wanner": false
   },
   "2027-01-13": {
     "Levin Linder": false,
@@ -357,7 +391,9 @@
     "Filian Oßwald": false,
     "Nathan Glowacki": false,
     "Leo Kunemann": false,
-    "Jona": false
+    "Jona": false,
+    "Lean Mühlethaler": false,
+    "Lenni Wanner": false
   },
   "2027-01-20": {
     "Levin Linder": false,
@@ -377,7 +413,9 @@
     "Filian Oßwald": false,
     "Nathan Glowacki": false,
     "Leo Kunemann": false,
-    "Jona": false
+    "Jona": false,
+    "Lean Mühlethaler": false,
+    "Lenni Wanner": false
   },
   "2027-01-27": {
     "Levin Linder": false,
@@ -397,7 +435,9 @@
     "Filian Oßwald": false,
     "Nathan Glowacki": false,
     "Leo Kunemann": false,
-    "Jona": false
+    "Jona": false,
+    "Lean Mühlethaler": false,
+    "Lenni Wanner": false
   },
   "2027-02-03": {
     "Levin Linder": false,
@@ -417,7 +457,9 @@
     "Filian Oßwald": false,
     "Nathan Glowacki": false,
     "Leo Kunemann": false,
-    "Jona": false
+    "Jona": false,
+    "Lean Mühlethaler": false,
+    "Lenni Wanner": false
   },
   "2027-02-10": {
     "Levin Linder": false,
@@ -437,7 +479,9 @@
     "Filian Oßwald": false,
     "Nathan Glowacki": false,
     "Leo Kunemann": false,
-    "Jona": false
+    "Jona": false,
+    "Lean Mühlethaler": false,
+    "Lenni Wanner": false
   },
   "2027-02-17": {
     "Levin Linder": false,
@@ -457,7 +501,9 @@
     "Filian Oßwald": false,
     "Nathan Glowacki": false,
     "Leo Kunemann": false,
-    "Jona": false
+    "Jona": false,
+    "Lean Mühlethaler": false,
+    "Lenni Wanner": false
   },
   "2027-02-24": {
     "Levin Linder": false,
@@ -477,7 +523,9 @@
     "Filian Oßwald": false,
     "Nathan Glowacki": false,
     "Leo Kunemann": false,
-    "Jona": false
+    "Jona": false,
+    "Lean Mühlethaler": false,
+    "Lenni Wanner": false
   },
   "2027-03-03": {
     "Levin Linder": false,
@@ -497,7 +545,9 @@
     "Filian Oßwald": false,
     "Nathan Glowacki": false,
     "Leo Kunemann": false,
-    "Jona": false
+    "Jona": false,
+    "Lean Mühlethaler": false,
+    "Lenni Wanner": false
   },
   "2027-03-10": {
     "Levin Linder": false,
@@ -517,7 +567,9 @@
     "Filian Oßwald": false,
     "Nathan Glowacki": false,
     "Leo Kunemann": false,
-    "Jona": false
+    "Jona": false,
+    "Lean Mühlethaler": false,
+    "Lenni Wanner": false
   },
   "2027-03-17": {
     "Levin Linder": false,
@@ -537,7 +589,9 @@
     "Filian Oßwald": false,
     "Nathan Glowacki": false,
     "Leo Kunemann": false,
-    "Jona": false
+    "Jona": false,
+    "Lean Mühlethaler": false,
+    "Lenni Wanner": false
   },
   "2027-03-24": {
     "Levin Linder": false,
@@ -557,7 +611,9 @@
     "Filian Oßwald": false,
     "Nathan Glowacki": false,
     "Leo Kunemann": false,
-    "Jona": false
+    "Jona": false,
+    "Lean Mühlethaler": false,
+    "Lenni Wanner": false
   },
   "2027-03-31": {
     "Levin Linder": false,
@@ -577,7 +633,9 @@
     "Filian Oßwald": false,
     "Nathan Glowacki": false,
     "Leo Kunemann": false,
-    "Jona": false
+    "Jona": false,
+    "Lean Mühlethaler": false,
+    "Lenni Wanner": false
   },
   "2027-04-07": {
     "Levin Linder": false,
@@ -597,7 +655,9 @@
     "Filian Oßwald": false,
     "Nathan Glowacki": false,
     "Leo Kunemann": false,
-    "Jona": false
+    "Jona": false,
+    "Lean Mühlethaler": false,
+    "Lenni Wanner": false
   },
   "2027-04-14": {
     "Levin Linder": false,
@@ -617,7 +677,9 @@
     "Filian Oßwald": false,
     "Nathan Glowacki": false,
     "Leo Kunemann": false,
-    "Jona": false
+    "Jona": false,
+    "Lean Mühlethaler": false,
+    "Lenni Wanner": false
   },
   "2027-04-21": {
     "Levin Linder": false,
@@ -637,7 +699,9 @@
     "Filian Oßwald": false,
     "Nathan Glowacki": false,
     "Leo Kunemann": false,
-    "Jona": false
+    "Jona": false,
+    "Lean Mühlethaler": false,
+    "Lenni Wanner": false
   },
   "2027-04-28": {
     "Levin Linder": false,
@@ -657,7 +721,9 @@
     "Filian Oßwald": false,
     "Nathan Glowacki": false,
     "Leo Kunemann": false,
-    "Jona": false
+    "Jona": false,
+    "Lean Mühlethaler": false,
+    "Lenni Wanner": false
   },
   "2027-05-05": {
     "Levin Linder": false,
@@ -677,7 +743,9 @@
     "Filian Oßwald": false,
     "Nathan Glowacki": false,
     "Leo Kunemann": false,
-    "Jona": false
+    "Jona": false,
+    "Lean Mühlethaler": false,
+    "Lenni Wanner": false
   },
   "2027-05-12": {
     "Levin Linder": false,
@@ -697,7 +765,9 @@
     "Filian Oßwald": false,
     "Nathan Glowacki": false,
     "Leo Kunemann": false,
-    "Jona": false
+    "Jona": false,
+    "Lean Mühlethaler": false,
+    "Lenni Wanner": false
   },
   "2027-05-19": {
     "Levin Linder": false,
@@ -717,7 +787,9 @@
     "Filian Oßwald": false,
     "Nathan Glowacki": false,
     "Leo Kunemann": false,
-    "Jona": false
+    "Jona": false,
+    "Lean Mühlethaler": false,
+    "Lenni Wanner": false
   },
   "2027-05-26": {
     "Levin Linder": false,
@@ -737,7 +809,9 @@
     "Filian Oßwald": false,
     "Nathan Glowacki": false,
     "Leo Kunemann": false,
-    "Jona": false
+    "Jona": false,
+    "Lean Mühlethaler": false,
+    "Lenni Wanner": false
   },
   "2027-06-02": {
     "Levin Linder": false,
@@ -757,7 +831,9 @@
     "Filian Oßwald": false,
     "Nathan Glowacki": false,
     "Leo Kunemann": false,
-    "Jona": false
+    "Jona": false,
+    "Lean Mühlethaler": false,
+    "Lenni Wanner": false
   },
   "2027-06-09": {
     "Levin Linder": false,
@@ -777,7 +853,9 @@
     "Filian Oßwald": false,
     "Nathan Glowacki": false,
     "Leo Kunemann": false,
-    "Jona": false
+    "Jona": false,
+    "Lean Mühlethaler": false,
+    "Lenni Wanner": false
   },
   "2027-06-16": {
     "Levin Linder": false,
@@ -797,7 +875,9 @@
     "Filian Oßwald": false,
     "Nathan Glowacki": false,
     "Leo Kunemann": false,
-    "Jona": false
+    "Jona": false,
+    "Lean Mühlethaler": false,
+    "Lenni Wanner": false
   },
   "2027-06-23": {
     "Levin Linder": false,
@@ -817,7 +897,9 @@
     "Filian Oßwald": false,
     "Nathan Glowacki": false,
     "Leo Kunemann": false,
-    "Jona": false
+    "Jona": false,
+    "Lean Mühlethaler": false,
+    "Lenni Wanner": false
   },
   "2027-06-30": {
     "Levin Linder": false,
@@ -837,7 +919,9 @@
     "Filian Oßwald": false,
     "Nathan Glowacki": false,
     "Leo Kunemann": false,
-    "Jona": false
+    "Jona": false,
+    "Lean Mühlethaler": false,
+    "Lenni Wanner": false
   },
   "2027-07-07": {
     "Levin Linder": false,
@@ -857,7 +941,9 @@
     "Filian Oßwald": false,
     "Nathan Glowacki": false,
     "Leo Kunemann": false,
-    "Jona": false
+    "Jona": false,
+    "Lean Mühlethaler": false,
+    "Lenni Wanner": false
   },
   "2027-07-14": {
     "Levin Linder": false,
@@ -877,7 +963,9 @@
     "Filian Oßwald": false,
     "Nathan Glowacki": false,
     "Leo Kunemann": false,
-    "Jona": false
+    "Jona": false,
+    "Lean Mühlethaler": false,
+    "Lenni Wanner": false
   },
   "2027-07-21": {
     "Levin Linder": false,
@@ -897,7 +985,9 @@
     "Filian Oßwald": false,
     "Nathan Glowacki": false,
     "Leo Kunemann": false,
-    "Jona": false
+    "Jona": false,
+    "Lean Mühlethaler": false,
+    "Lenni Wanner": false
   },
   "2027-07-28": {
     "Levin Linder": false,
@@ -917,6 +1007,8 @@
     "Filian Oßwald": false,
     "Nathan Glowacki": false,
     "Leo Kunemann": false,
-    "Jona": false
+    "Jona": false,
+    "Lean Mühlethaler": false,
+    "Lenni Wanner": false
   }
 }
